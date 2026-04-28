@@ -1,0 +1,15 @@
+{
+  "name": "octave",
+  "version": "1.9.2",
+  "description": "Octave GTM knowledge base integration for Claude Code and OpenAI Codex — provides bidirectional access to personas, playbooks, messaging, and more. Give Claude and Codex grounded context for your GTM motions.",
+  "author": {
+    "name": "Octave",
+    "url": "https://octavehq.com"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Octave GTM",
+    "shortDescription": "Octave GTM knowledge base integration for Claude Code and OpenAI Codex — provides bidirectional access to personas, playbooks, messaging, and more. Give Claude and Codex grounded context for your GTM motions.",
+    "category": "Productivity"
+  }
+}
