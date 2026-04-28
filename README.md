@@ -8,7 +8,7 @@ GTM knowledge base integration for OpenAI Codex CLI.
 
 ```bash
 codex plugin marketplace add https://github.com/octavehq/lfgtm-codex
-codex plugin install octave@lfgtm
+npx codex-marketplace add  octavehq/lfgtm-codex --plugin
 ```
 
 ## Configure your Octave MCP server
