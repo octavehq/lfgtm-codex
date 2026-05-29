@@ -5,9 +5,9 @@ description: Octave-powered presentation builder that researches, structures, an
 
 # /octave-deck - Octave-Powered Deck Builder
 
-Build compelling, self-contained HTML presentations powered by your Octave GTM knowledge base. Unlike generic slide builders, this skill leverages your library's personas, competitors, playbooks, proof points, and real conversation data to research, structure, and generate presentations grounded in your actual go-to-market intelligence.
+Build compelling, self-contained HTML presentations powered by your Octave GTM knowledge base. Unlike generic slide builders, this skill leverages your library's personas, competitors, Motion ICP narratives, proof points, and real conversation data to research, structure, and generate presentations grounded in your actual go-to-market intelligence.
 
-> HTML presentation engine inspired by [frontend-slides](https://github.com/zarazhangrui/frontend-slides) by Zara Zhang (MIT license).
+> HTML presentation engine inspired by [frontend-slides](https://github.com/zarazhangrui/frontend-slides) by Zara Zhang (MIT license). Decks render on a **fixed 1920×1080 stage scaled to the viewport** (see [references/viewport-base.css](references/viewport-base.css)).
 
 ## Usage
 
@@ -136,11 +136,26 @@ Your choice:
 
 Use the recommended default as the pre-selected option. If the user picks "Custom," ask for a target slide count.
 
+**Density — "How should each slide read?"**
+
+```
+How dense should each slide be?
+
+1. Speaker-led (low density) — big ideas, generous space, 1-3 bullets max,
+   more slides. Best for live pitches, keynotes, exec rooms.
+2. Reading-first (high density) — self-contained, structured grids,
+   4-8 bullets or 4-6 cards, tighter spacing. Best for QBRs, async/leave-behind decks.
+
+Your choice:
+```
+
+Default by purpose: pitches/keynotes/competitive → **speaker-led**; QBRs/enablement/launch/strategy → **reading-first**. Carry this choice through Step 5: it drives the content density limits per slide type (split into more slides rather than shrink text or overflow). Either way, no scrolling and no cramped text — the fixed stage scales the whole slide, it does not add room.
+
 ### Step 2: Octave-Powered Context Gathering
 
 Based on purpose, goal, and audience, use Octave MCP tools to build rich context for the deck. **Always tell the user what you're researching and why.**
 
-**Call as many tools as needed to build a complete picture.** The best decks come from layering multiple sources — company enrichment + playbook messaging + proof points + conversation intel all combine to create slides grounded in real data. Don't stop at one tool when three would give you a stronger narrative.
+**Call as many tools as needed to build a complete picture.** The best decks come from layering multiple sources — company enrichment + Motion ICP narrative + proof points + conversation intel all combine to create slides grounded in real data. Don't stop at one tool when three would give you a stronger narrative.
 
 That said, not every tool applies to every deck. Use your judgment about which are relevant to *this specific* situation. The tables below show what's available — pick the combination that gives you the richest context for the deck type and audience.
 
@@ -178,10 +193,11 @@ Start with company and person enrichment, then pull positioning context as neede
 | Key contacts | `find_person({ searchMode: "people", companyDomain, fuzzyTitles })` | When audience includes unknown stakeholders |
 | Person deep-dive | `enrich_person({ person: { email, firstName, lastName, companyDomain } })` | When a specific person is the target audience |
 | ICP fit scoring | `qualify_company({ companyDomain })` | When you need to frame "why us" for this account |
-| All playbooks | `list_all_entities({ entityType: "playbook" })` | Quick scan of available playbooks to find the right one |
-| Matching playbook | `search_knowledge_base({ query: "<industry> <persona>", entityTypes: ["playbook"] })` | When you have a concept and need the best-fit playbook |
-| Playbook details | `get_playbook({ oId, includeValueProps: true })` | After finding a relevant playbook — gets full content + value props |
-| Value props | `list_value_props({ playbookOId })` | Fetch value props for a specific playbook (requires playbook oId) |
+| All Motions | `list_motions()` | Quick scan of Motions to find the right one for this account |
+| Motion Playbooks | `list_motion_playbooks({ motionOId })` | Default + Custom Motion Playbooks for the selected Motion |
+| Motion Playbook details | `get_motion_playbook({ motionPlaybookOId })` | Full Motion Playbook narrative content |
+| Motion ICP cells | `list_motion_icps({ motionOId })` | Persona × segment cells under a Motion |
+| Motion ICP narrative | `find_motion_icp({ motionIcpOId, includeLearnings: true })` | Cell-level Target ICP / Strategic narrative / Pains / Benefits / Methodology / References + Learning Loop learnings |
 | All proof points | `list_entities({ entityType: "proof_point" })` | Fetch actual proof points with full data — metrics, quotes, logos |
 | All references | `list_entities({ entityType: "reference" })` | Fetch customer references with full details |
 | Find proof points by topic | `search_knowledge_base({ query: "<industry> results", entityTypes: ["proof_point", "reference"] })` | When you need proof points *about* a specific topic or industry |
@@ -205,10 +221,12 @@ Pull from the library to ground the deck in your actual GTM data:
 | Products | `list_all_entities({ entityType: "product" })` | Quick scan of product capabilities |
 | Use cases | `list_all_entities({ entityType: "use_case" })` | When deck covers how customers use the product |
 | Entity details | `get_entity({ oId })` | Deep dive on any specific entity found above |
-| Positioning by topic | `search_knowledge_base({ query: "<topic>", entityTypes: ["playbook", "product"] })` | When you have a concept and need relevant positioning |
+| Positioning by topic | `search_knowledge_base({ query: "<topic>", entityTypes: ["product"] })` | When you have a concept and need relevant positioning |
+| Motions | `list_motions()` | Available Motions to ground the deck in |
+| Motion Playbooks | `list_motion_playbooks({ motionOId })` and `get_motion_playbook({ motionPlaybookOId })` | Default + Custom Motion Playbook narrative content |
+| Motion ICP narratives | `list_motion_icps({ motionOId })` then `find_motion_icp({ motionIcpOId })` | Persona × segment narrative grounded in the library |
 | Proof points | `list_entities({ entityType: "proof_point" })` | Fetch all proof points with full data for credibility slides |
 | References | `list_entities({ entityType: "reference" })` | Fetch customer references for social proof slides |
-| Value props | `list_value_props({ playbookOId })` | Value props for a specific playbook |
 | Uploaded docs | `search_resources({ query: "<topic>" })` | Find uploaded strategy docs, market research, or assets |
 | Market signals | `list_findings({ query: "<topic>", startDate: "<90 days ago>" })` | Recent conversation-based trends |
 | Deal outcomes | `list_events({ startDate: "<90 days ago>", filters: { eventTypes: ["DEAL_WON", "DEAL_LOST"] } })` | Pipeline, revenue, or win/loss data |
@@ -224,32 +242,33 @@ Focus on the specific competitor(s) and evidence from real deals:
 | All competitors | `list_all_entities({ entityType: "competitor" })` | Quick scan of all competitors |
 | Competitor full data | `list_entities({ entityType: "competitor" })` | Full competitor profiles — strengths, weaknesses, positioning |
 | Competitor deep dive | `get_entity({ oId })` | Everything about one specific competitor |
-| Competitive positioning | `search_knowledge_base({ query: "<competitor> differentiation", entityTypes: ["playbook", "competitor"] })` | When you have a concept — "how do we beat them on security?" |
+| Competitive positioning | `search_knowledge_base({ query: "<competitor> differentiation", entityTypes: ["competitor"] })` | When you have a concept — "how do we beat them on security?" |
 | Our products | `list_entities({ entityType: "product" })` | Full product data for side-by-side comparison slides |
 | Proof points (competitive wins) | `list_entities({ entityType: "proof_point" })` | Fetch all proof points — filter for competitive wins |
 | Win/loss data | `list_events({ filters: { eventTypes: ["DEAL_WON", "DEAL_LOST"], competitors: ["<oId>"] } })` | Real deal outcomes against this competitor |
 | Conversation evidence | `list_findings({ query: "<competitor>", eventFilters: { competitors: ["<oId>"] } })` | Real objections and mentions from calls |
-| Value props | `list_value_props({ playbookOId })` | Differentiators from a specific playbook |
+| Custom Motion Playbooks (COMPETITIVE) | `list_motions()` then `list_motion_playbooks({ motionOId })` filtered by `narrativeType === "COMPETITIVE"` | Competitive narrative layered onto each Motion |
+| Motion Playbook details | `get_motion_playbook({ motionPlaybookOId })` | Full competitive narrative content |
 | Competitive resources | `search_resources({ query: "<competitor>" })` | Uploaded battlecards, analyst reports, or competitive docs |
 
 ---
 
 #### For Enablement Decks (training, sales kickoff)
 
-Mix playbook content with real deal examples:
+Mix Motion ICP narrative content with real deal examples:
 
 | What you need | Tool | When to use |
 |---------------|------|-------------|
-| All playbooks | `list_all_entities({ entityType: "playbook" })` | Scan available playbooks to decide which to teach |
-| Playbook full content | `get_playbook({ oId, includeValueProps: true })` | Full playbook with value props for training slides |
-| Playbook by topic | `search_knowledge_base({ query: "<topic>", entityTypes: ["playbook"] })` | When you need the playbook most relevant to a concept |
+| All Motions | `list_motions()` | Scan available Motions to decide which to teach |
+| Motion Playbooks | `list_motion_playbooks({ motionOId })` and `get_motion_playbook({ motionPlaybookOId })` | Default + Custom Motion Playbook content for training slides |
+| Motion ICP narratives | `list_motion_icps({ motionOId })` then `find_motion_icp({ motionIcpOId, includeLearnings: true })` | Cell-level narratives + Learning Loop learnings for training slides |
 | Personas | `list_entities({ entityType: "persona" })` | Full persona data for "know your buyer" slides |
 | Competitors | `list_entities({ entityType: "competitor" })` | Full competitor data for competitive handling slides |
 | All proof points | `list_entities({ entityType: "proof_point" })` | Fetch proof points with full data for example slides |
 | Proof points by topic | `search_knowledge_base({ query: "results metrics", entityTypes: ["proof_point", "reference"] })` | When you need proof points *about* specific outcomes |
 | Recent wins | `list_events({ filters: { eventTypes: ["DEAL_WON"] } })` | Success stories to use as examples |
 | Win details | `get_event_detail({ eventOId })` | Deep dive on a notable win for a case study slide |
-| Training resources | `search_resources({ query: "<topic>" })` | Uploaded enablement docs, playbook PDFs, or training assets |
+| Training resources | `search_resources({ query: "<topic>" })` | Uploaded enablement docs, Motion Playbook reference PDFs, or training assets |
 
 ---
 
@@ -300,7 +319,7 @@ Slide 3: [Solution Overview]
 
 Octave Sources Used:
 • Company profile: [Company name] — [key insights]
-• Playbook: [Playbook name] — [key messaging angle]
+• Motion / Motion ICP: [Motion name + persona × segment cell] — [key messaging angle]
 • Proof points: [N] references pulled
 • Competitive intel: [If applicable]
 • Findings: [N] recent signals
@@ -321,61 +340,72 @@ Does this outline look good? I can:
 Ask the user:
 
 ```
-Do you want to use your company's brand styling?
+Whose brand should this deck reflect — and how should we style it?
 
-1. Yes — extract from my website (provide URL)
-2. Yes — I'll provide brand assets (colors, fonts, logo)
-3. No — I'll pick from style presets
-4. Use Octave brand styling
+1. My brand (the sender) — extract from my website (give the URL)
+2. The audience's brand — mirror the recipient's company so the deck feels built for them (give *their* URL). Common for customer pitches and ABM.
+3. I'll provide brand assets directly (colors, fonts, logo)
+4. No brand — pick from style presets
+5. Use Octave brand styling
 
 Your choice:
 ```
 
-If user wants brand extraction:
+> **Whose brand decides which website you fetch.** This is the key fork: for option 1 run the extraction against *your own* domain; for option 2 run it against the *audience's/recipient's* domain. Everything below targets that chosen domain.
 
-**Tier 1: browser-use (best quality, if available)**
+If user wants brand extraction, work down these tiers — start at Tier 1 and only fall through when a tier is unavailable. Tiers 1–2 are the fast, high-quality path; combine both when you can (colors+logo from Tier 1, fonts+components from Tier 2).
+
+**Tier 1: Octave brand-assets tool (first-party, fast — try first)**
+```
+get_external_brand_assets({ url: "https://<domain>" })
+  → colors (primary / secondary / accent), logo variants, backdrop images, brand name
+get_external_brand_logo({ domain: "<domain>" })   # if you only need the single best logo
+```
+This is one call for the visual identity and the right default. **Sanity-check the result — the scraper reads the DOM and can misattribute a homepage logo wall:**
+- If `brandName` doesn't match the target company, ignore it (it likely grabbed a customer name).
+- A strip of many logos with varied aspect ratios is usually a **"trusted by" customer wall**, not the brand's own logo — don't use those as the deck logo. Prefer the `favicon` / `apple-touch-icon` entries or the nav wordmark.
+- The `colors` are usually reliable; still confirm with the user.
+
+**Tier 2: `scrape_website` — components & typography (the "looks like their site" leap)**
+```
+scrape_website({ url: "https://<domain>",        format: "html", includeScreenshot: true })
+scrape_website({ url: "https://<representative-page>", format: "html", includeScreenshot: true })
+```
+Pull the homepage **and one representative page** (case study, blog post, pricing, or product page). Then:
+- **From the screenshot(s):** read the component vocabulary the DOM hides — button shapes, card styles, corner radii, spacing rhythm, type scale, section patterns, use of gradients/imagery. Emulate this *component and layout system*, not just the colors.
+- **From the html:** extract exact fonts (`font-family`, Google Fonts `<link>`s / `@font-face`), CSS custom properties (`--brand-*`, `--color-*`), and the real copy tone.
+
+> If `scrape_website` isn't available in this workspace yet, skip to Tier 3.
+
+**Tier 3: browser-use (fallback if `scrape_website` unavailable)**
 ```
 1. browser-use open <website-url>
 2. browser-use screenshot brand-capture.png
 3. browser-use eval "(() => {
-     const styles = getComputedStyle(document.documentElement);
      const body = getComputedStyle(document.body);
      return {
-       bgColor: body.backgroundColor,
-       textColor: body.color,
-       fontFamily: body.fontFamily,
+       bgColor: body.backgroundColor, textColor: body.color, fontFamily: body.fontFamily,
        links: getComputedStyle(document.querySelector('a') || document.body).color,
        headings: getComputedStyle(document.querySelector('h1,h2,h3') || document.body).fontFamily,
-       logos: [...document.querySelectorAll('img[src*=logo], svg[class*=logo], header img')].map(e => e.src || 'inline-svg').slice(0, 3)
+       logos: [...document.querySelectorAll('header img, img[src*=logo], svg[class*=logo]')].map(e => e.src || 'inline-svg').slice(0, 3)
      };
    })()"
 4. browser-use extract "List the primary brand colors (hex), fonts, and logo URLs visible on this page"
-5. Combine extractions into brand config
-6. Show to user for confirmation
 ```
 
-**Tier 2: WebFetch (if browser-use unavailable)**
+**Tier 4: WebFetch (fallback if browser-use unavailable)**
 ```
 1. WebFetch the homepage URL
-2. Parse HTML/CSS for:
-   - CSS custom properties (--brand-*, --color-*, --primary, etc.)
-   - font-family declarations from body, h1-h3
-   - Logo URLs from <img>, <svg>, og:image meta tags
-   - meta theme-color
-3. Show extracted brand config to user for confirmation
+2. Parse HTML/CSS for CSS custom properties (--brand-*, --color-*), font-family on body/h1-h3,
+   logo URLs from <img>/<svg>/og:image, and meta theme-color
 ```
 
-**Tier 3: Manual (if neither works)**
+**Tier 5: Manual (if nothing automated works)**
 ```
 I couldn't automatically extract your brand. You can:
-
 1. Share your brand guidelines (PDF or link)
 2. Provide hex colors: primary, secondary, background, text
-3. Name your fonts (heading + body)
-4. Share logo files
-5. Try coolors.co/image-picker with a screenshot of your site
-
-Provide what you have:
+3. Name your fonts (heading + body)   4. Share logo files
 ```
 
 **Always confirm the brand config with the user before proceeding:**
@@ -385,17 +415,15 @@ BRAND CONFIG EXTRACTED
 ======================
 
 Colors:
-  Primary:    #XXXXXX ██
-  Secondary:  #XXXXXX ██
-  Background: #XXXXXX ██
-  Text:       #XXXXXX ██
-  Accent:     #XXXXXX ██
+  Primary:    #XXXXXX ██   Secondary: #XXXXXX ██   Accent: #XXXXXX ██
+  Background: #XXXXXX ██   Text:      #XXXXXX ██
 
-Fonts:
-  Headings: [Font name]
-  Body: [Font name]
+Fonts:    Headings: [Font name]    Body: [Font name]
 
-Logo: [URL or file path]
+Logo:     [URL or file path]   (verified as the brand's own, not a customer logo)
+
+Components observed (from screenshots, if Tier 2 ran):
+  • [e.g. pill buttons, 12px card radius, generous section spacing, gradient accents]
 
 Does this look right? (y/n/adjust)
 ```
@@ -431,18 +459,20 @@ What impression should the deck make?
 Your mood:
 ```
 
-Generate **3 single-slide HTML preview files** based on the mood. Use the first slide from the outline as content. Save to `.octave-decks/slide-previews/`:
+Generate **3 single-slide HTML preview files** — show, don't tell. Each is a real, animated **title slide using the user's actual first-slide content** (title, subtitle, date, author, logo if available). Never render "Option A", "preview", a preset/template name, or any file path *on the slide itself*. Save to `.octave-decks/slide-previews/` as `style-a.html`, `style-b.html`, `style-c.html`, built on the **fixed 1920×1080 stage** (paste `viewport-base.css`).
 
-| Mood | Preview Presets |
+**Preview mix:** generate previews from the mood-matched presets in [references/style-presets.md](references/style-presets.md), optionally swapping one for a custom wildcard:
+
+| Mood | Preview presets |
 |------|----------------|
 | Impressed | `midnight-pro`, `executive-dark`, `octave-brand` |
 | Excited | `electric-studio`, `neon-pulse`, `solar-flare` |
 | Calm | `swiss-modern`, `soft-light`, `paper-minimal` |
 | Inspired | `dark-botanical`, `aurora-gradient`, `monochrome-bold` |
 
-If brand was extracted in Step 3, add a **4th brand-themed preview**.
+For more range, make one of the three a **custom wildcard** — a self-generated design that follows the no-slop rules (distinctive typography, avoid Inter/Roboto/system fonts; a committed palette, no generic purple-on-white; a recognizable layout system on the fixed 16:9 stage). If brand was extracted in Step 3, add a **4th brand-themed preview**.
 
-Open all previews in the browser for the user to compare, then ask which they prefer.
+Open all previews in the browser for the user to compare, then ask which they prefer (or which elements to mix).
 
 ---
 
@@ -540,15 +570,18 @@ The entire `.octave-decks/` directory is in `.gitignore` — nothing here gets c
 
 #### HTML Architecture
 
-See [html-scaffold.md](references/html-scaffold.md) for the full HTML scaffold of the slide deck.
+See [html-scaffold.md](references/html-scaffold.md) for the full scaffold. **Two non-negotiables:**
 
-#### Viewport Fitting Requirements (Critical)
+1. **Paste the entire [viewport-base.css](references/viewport-base.css)** into the `<style>` block. It provides the `.deck-viewport` → `.deck-stage` (1920×1080) → `.slide` system, `.active`/`.visible` visibility, print-one-slide-per-page, and reduced-motion.
+2. **Author every slide at 1920×1080 in px** — no `clamp()`, `vw`, or `vh` for layout. The stage scales as a whole to fit any screen.
 
-These rules are non-negotiable. Every slide must fit within 100vh/100dvh without scrolling:
+#### Fixed-Canvas Fitting (Critical)
 
-1. **All font sizes use `clamp()`** — responsive to viewport, never fixed px
-2. **All spacing uses `clamp()`** — padding, margins, gaps scale with viewport
-3. **Content density limits per slide type:**
+Every slide is a fixed 1920×1080 canvas; the controller scales the whole stage. Fit is achieved by **density discipline**, not responsive math:
+
+1. **Size in px against the 1920×1080 canvas.** A title is ~96–120px, body ~24–32px, slide padding ~80×140px. Translate any `clamp()`/`vw` from a preset or custom design into fixed px.
+2. **`overflow: hidden` on every `.slide`** (from viewport-base.css) — anything that doesn't fit is clipped, so it must fit by design.
+3. **Content density limits per slide type** (tighten for *speaker-led*, allow the upper bound for *reading-first* — see Step 1 density choice):
 
 | Slide Type | Max Content |
 |-----------|------------|
@@ -565,29 +598,20 @@ These rules are non-negotiable. Every slide must fit within 100vh/100dvh without
 | Agenda/TOC | 1 heading + 5-8 agenda items |
 | CTA/Closing | 1 heading + 1-2 lines + 1 action |
 
-4. **If content exceeds limits** — split into multiple slides. Never overflow.
-5. **Media queries for short viewports:**
-   ```css
-   @media (max-height: 700px) { /* Reduce font sizes ~10% */ }
-   @media (max-height: 600px) { /* Reduce further, tighten padding */ }
-   @media (max-height: 500px) { /* Minimal mode */ }
-   ```
-6. **`overflow: hidden`** on every `.slide` — content that doesn't fit is invisible, so it must fit
+4. **If content exceeds limits — split into more slides.** Never shrink text below readable size and never overflow.
+5. **Verify before delivery.** If browser-use is available, open the deck and screenshot a few slides to check for clipped text or overlapping panels (a card can pass a height check while still being covered by another grid panel). Fix by splitting or reducing content.
 
 #### Animation Patterns
 
-Staggered entrance animations triggered by Intersection Observer:
+Reveals are triggered by the `.visible` class the controller toggles on the active slide (no Intersection Observer — slides switch via `.active`/`.visible`, not scroll):
 
 ```css
-.slide .animate-in {
+.animate-in {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(30px);
   transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
 }
-.slide.visible .animate-in {
-  opacity: 1;
-  transform: translateY(0);
-}
+.slide.visible .animate-in { opacity: 1; transform: translateY(0); }
 /* Stagger children */
 .slide.visible .animate-in:nth-child(1) { transition-delay: 0.1s; }
 .slide.visible .animate-in:nth-child(2) { transition-delay: 0.2s; }
@@ -595,28 +619,32 @@ Staggered entrance animations triggered by Intersection Observer:
 /* ... up to 8 */
 ```
 
-Additional animation options (use sparingly):
-- **Counter animation** for metrics: numbers count up when slide visible
-- **Draw-in** for borders/lines: width/height transitions from 0
-- **Fade-scale** for cards: `transform: scale(0.95)` to `scale(1)`
-
-Always respect `prefers-reduced-motion`:
-```css
-@media (prefers-reduced-motion: reduce) {
-  .slide .animate-in { opacity: 1; transform: none; transition: none; }
-}
-```
+Match motion to the chosen style (see [references/animation-patterns.md](references/animation-patterns.md) for the effect-to-feeling guide and snippets: fade/slide, scale-in, blur-in, gradient-mesh backgrounds, 3D tilt). Use extras sparingly: counter animations for metrics, draw-in for borders, fade-scale for cards. `prefers-reduced-motion` is already handled by viewport-base.css.
 
 #### Navigation Implementation
 
+A small `SlidePresentation` controller (in the scaffold) handles everything — **no scroll-snap, no nav dots**:
+
 ```javascript
-// Generate nav dots from slide count
-// Scroll snap handles primary navigation
-// Keyboard: ArrowDown/Right/Space = next, ArrowUp/Left = prev
-// Progress bar: width = (currentSlide / totalSlides) * 100%
-// Intersection Observer triggers .visible class for animations
-// Touch support via scroll snap (native)
+// 1. Stage scaling: transform = translate(x,y) scale(min(vw/1920, vh/1080)); re-fit on resize
+// 2. show(i): toggle .active + .visible on the target slide (re-runs .animate-in reveals)
+// 3. Keyboard: ArrowRight/PageDown/Space = next; ArrowLeft/PageUp = prev; Home/End; R = reset
+// 4. Touch: swipe left/right
+// 5. #deckControls (outside the stage, so it isn't scaled): "n / total" + prev/next buttons
 ```
+
+#### Avoid AI Slop
+
+Whether using a preset or a custom wildcard, the output should look intentional, not generated:
+
+- **Fonts:** avoid Inter, Roboto, Arial, and raw system fonts for *custom* looks. Reach for distinctive display faces (Fontshare/Google Fonts). (Brand presets that specify a brand font are fine.)
+- **Color:** commit to a palette with a sharp accent — avoid generic purple-gradient-on-white and timid washes.
+- **Layout:** vary slide types; avoid cookie-cutter "title + 3 bullets" on every slide.
+- **Context:** the design should fit the occasion and audience (a board deck and a hackathon demo should not look alike).
+
+#### Inline Editing (included by default)
+
+Add a lightweight in-browser editor so the user can tweak copy without touching code. Do **not** ask about it during intake — include it unless the user requested a locked/export-only deck. Implementation details (the JS-based hover with a 400ms grace period — **not** a CSS `~` sibling selector, which breaks because `pointer-events:none` drops the hover chain — plus the `E` shortcut and stripping edit state on export) are in [html-scaffold.md](references/html-scaffold.md).
 
 #### Slide Type Templates
 
@@ -641,15 +669,20 @@ Style:  [Preset name or "Custom Brand"]
 Size:   [file size]
 
 Navigation:
-• Scroll or swipe to navigate between slides
-• Keyboard: Arrow keys, Space, Page Up/Down
-• Click nav dots on the right edge
+• Arrow keys / Space / Page Up-Down to move; Home/End to jump; R to reset
+• Swipe left/right on touch devices
+• Prev/next + "n / total" controls at the bottom
+• Scales to fit any screen (fixed 16:9 stage, letterboxed)
+
+Editing:
+• Hover the top-left corner (or press E) to toggle inline edit mode, then
+  click any text to edit. Export saves a clean copy with edit state stripped.
 
 Customization tips:
-• Colors: Edit the :root CSS variables at the top of the file
-• Content: Each <section class="slide"> is one slide
-• Fonts: Change the Google Fonts <link> and font-family values
-• Add slides: Copy a <section> block, increment data-slide
+• Colors/fonts: edit the :root CSS variables at the top of the file
+• Content: each <section class="slide"> inside .deck-stage is one slide
+• Add slides: copy a <section class="slide"> block (only the first carries
+  "active visible")
 
 ---
 
@@ -658,13 +691,19 @@ Want me to:
 2. Change the style/colors
 3. Add or remove slides
 4. Create a version for a different audience
-5. Export to another format (PPTX, PDF, LinkedIn Carousel, Google Slides, Gamma)
+5. Export or share (PDF, live URL/Vercel, LinkedIn Carousel, PPTX, Google Slides, Gamma)
 6. Done
 ```
 
-### Step 7: Export (Optional)
+### Step 7: Export & Share (Optional)
 
-Consult [references/export-guide.md](references/export-guide.md) for detailed export instructions for each format: PDF, LinkedIn Carousel, PPTX, Google Slides, Gamma, and Markdown.
+Consult [references/export-guide.md](references/export-guide.md) for detailed instructions per format:
+
+- **PDF** — `bash "${CLAUDE_PLUGIN_ROOT:-.}"/scripts/export-pdf.sh <deck>.html` (headless Playwright, one slide/page; `--compact` for smaller files). Browser print is the fallback.
+- **Live URL** — `bash "${CLAUDE_PLUGIN_ROOT:-.}"/scripts/deploy.sh <deck-folder>/` deploys to Vercel and returns a public link that works on any device.
+- **LinkedIn Carousel, PPTX, Google Slides, Gamma, Markdown** — as documented in the export guide.
+
+> `export-pdf.sh` and `deploy.sh` are generic — the same commands work for any HTML output from the other Octave skills (one-pager, proposal, microsite, brief, win-loss-report).
 
 ---
 
@@ -734,8 +773,11 @@ for i, slide in enumerate(prs.slides):
 - `list_all_entities` - Quick scan of all entities of a type (minimal fields, no pagination)
 - `list_entities` - Fetch entities with full data and pagination (proof points, references, personas, etc.)
 - `get_entity` - Deep dive on one specific entity
-- `get_playbook` - Retrieve a playbook with full content and value props
-- `list_value_props` - Value propositions for a specific playbook
+- `list_motions` - List Motions in the workspace
+- `list_motion_playbooks` - List Motion Playbooks under a Motion (Default + Custom)
+- `get_motion_playbook` - Full details for a Motion Playbook
+- `list_motion_icps` - List Motion ICP cells (persona × segment) for a Motion
+- `find_motion_icp` - Motion ICP narrative + Learning Loop learnings
 
 ### Library — Searching
 - `search_knowledge_base` - Semantic search across library entities and resources
@@ -753,6 +795,9 @@ for i, slide in enumerate(prs.slides):
 - `generate_email` - Generate email content (for follow-up slides)
 
 ### Brand & Style
+- `get_external_brand_assets` - Scrape a URL for brand colors, logo variants, backdrop images, brand name (Tier 1 brand extraction)
+- `get_external_brand_logo` - Single best logo URL for a domain
+- `scrape_website` - Fetch a page as markdown/html with an optional screenshot (`{ format, includeScreenshot }`) — used to read components/typography for brand emulation (Tier 2)
 - `list_all_entities` (entityType: "brand_voice") - Available brand voices in workspace
 - `list_writing_styles` - Available writing styles in workspace
 
@@ -773,10 +818,10 @@ for i, slide in enumerate(prs.slides):
 > 2. Try a different domain or email
 > 3. Provide the content manually and I'll build the deck
 
-**No Matching Playbook:**
-> No playbook matches this audience profile directly.
+**No Matching Motion ICP:**
+> No Motion ICP cell matches this audience profile directly.
 >
-> I'll use your general value props and positioning. After the deck is built, consider creating a playbook for this segment: `/octave-library create playbook`
+> I'll use your general positioning. After the deck is built, consider adding the missing persona × segment cell to a Motion (or creating a new Motion).
 
 **PPTX Extraction Failed:**
 > Could not parse the PPTX file.

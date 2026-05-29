@@ -107,7 +107,7 @@ Your choice:
 
 Based on the target, stage, champion, and concerns, use Octave MCP tools to build rich context. **Always tell the user what you're researching and why.**
 
-**Call as many tools as needed to build a complete picture.** Proposals demand depth — company enrichment + playbook messaging + proof points + conversation intel + competitive context all combine to create a document that feels tailored, not templated. Don't stop at one tool when five would give you a stronger narrative.
+**Call as many tools as needed to build a complete picture.** Proposals demand depth — company enrichment + Motion ICP cell narrative + proof points + conversation intel + competitive context all combine to create a document that feels tailored, not templated. Don't stop at one tool when five would give you a stronger narrative.
 
 Not every tool applies to every proposal. Use your judgment about which are relevant to *this specific* situation. The tables below show what's available — pick the combination that produces the most compelling case.
 
@@ -135,7 +135,7 @@ This turns a generic proposal into "here's what we heard from you, and here's ex
 
 ---
 
-See [octave-tool-reference.md](references/octave-tool-reference.md) for the full tool reference tables (company/contact research, playbooks, proof points, competitive context, conversation history, and resources).
+See [octave-tool-reference.md](references/octave-tool-reference.md) for the full tool reference tables (company/contact research, Motions and Motion ICP cells, proof points, competitive context, conversation history, and resources).
 
 ---
 
@@ -163,7 +163,7 @@ How would you like to style the proposal?
 
 1. Use recommended — [preset name] (best for [audience])
 2. Pick from presets — show me all 12 options
-3. Use my brand — extract from a website or provide brand assets
+3. Use a brand — yours or the customer's; extract from a website or provide assets
 4. Surprise me — auto-pick based on context
 
 Your choice:
@@ -175,7 +175,7 @@ See [style-presets.md](references/style-presets.md) for the full list of 12 styl
 
 Full CSS variable definitions for each preset are in the deck skill's [style-presets.md](../deck/references/style-presets.md).
 
-**Brand extraction is encouraged for proposals.** A proposal that carries the customer's or your own brand colors looks significantly more professional and intentional. Follow the same brand discovery flow as `/octave-deck` Step 3 (browser-use > WebFetch > manual fallback).
+**Brand extraction is encouraged for proposals.** A proposal that carries the customer's or your own brand colors looks significantly more professional and intentional. Follow the same brand discovery flow as `/octave-deck` Step 3: `get_external_brand_assets` (Tier 1: colors + logo, with a customer-logo sanity check) → `scrape_website` with `includeScreenshot` (Tier 2: fonts + components) → browser-use → WebFetch → manual.
 
 ### Step 4: Generate HTML
 
@@ -273,6 +273,9 @@ See [delivery-summary.md](references/delivery-summary.md) for the PROPOSAL READY
 ```
 To save as PDF (recommended for sharing):
 
+PDF (recommended): bash "${CLAUDE_PLUGIN_ROOT:-.}"/scripts/export-pdf.sh .octave-proposals/<name>-<date>/<name>.html
+  — or use the manual print dialog below:
+
 1. Open the proposal in your browser (already open)
 2. Press Cmd+P (Mac) or Ctrl+P (Windows)
 3. Set margins to "Default" or "Minimum"
@@ -295,8 +298,13 @@ The proposal is designed with page breaks between sections for clean printing.
 - `list_all_entities` — Quick scan of all entities of a type (minimal fields)
 - `list_entities` — Fetch entities with full data and pagination
 - `get_entity` — Deep dive on one specific entity
-- `get_playbook` — Retrieve a playbook with full content and value props
-- `list_value_props` — Value propositions for a specific playbook
+
+### Motions
+- `list_motions` — Motions for the offering
+- `list_motion_playbooks` — Default + Custom Motion Playbooks under a Motion
+- `get_motion_playbook` — Full Motion Playbook details
+- `list_motion_icps` — Persona × segment matrix for a Motion
+- `find_motion_icp` — Full per-cell narrative + Learning Loop learnings
 
 ### Library — Searching
 - `search_knowledge_base` — Semantic search across library entities and resources
@@ -350,10 +358,10 @@ The proposal is designed with page breaks between sections for clean printing.
 > 2. Include a TBD placeholder — "Investment details to be discussed"
 > 3. Omit the investment section entirely
 
-**No Matching Playbook:**
-> No playbook matches this audience profile directly.
+**No Matching Motion ICP Cell:**
+> No Motion ICP cell matches this audience profile directly.
 >
-> I'll use your general value props and positioning. After the proposal is built, consider creating a playbook for this segment.
+> I'll use your general positioning. After the proposal is built, consider layering a Custom Motion Playbook (Thematic / Milestone / Account / Competitive) on the relevant Motion for this angle.
 
 ## Related Skills
 
