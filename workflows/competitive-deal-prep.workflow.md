@@ -41,7 +41,7 @@ params:
 save_as: competitor_intel
 description: Pull competitive intelligence from your library for the named competitor. This includes their strengths, weaknesses, differentiators, and reasons you win.
 
-If no competitor entity is found in the library, note this and use general knowledge. Suggest creating one with /octave:library create competitor.
+If no competitor entity is found in the library, note this and use general knowledge. Suggest creating one with /octave-library create competitor.
 
 Present the competitive positioning summary.
 
@@ -93,8 +93,7 @@ prompt: |
   2. Lead with proof points - show customer wins against this competitor
   3. Lead with value - focus on outcomes, not comparison
   4. Adjust strategy - let me describe a different angle
-
-Save the chosen strategy for email generation.
+save_as: chosen_strategy
 
 ### Step 7: Generate Competitive Outreach
 tool: generate_email
@@ -137,14 +136,14 @@ template: |
   ---
 
   Talk Tracks:
-  - If they mention {{competitor_name}}'s strength: {{counter_messaging}}
-  - Key differentiator to emphasize: {{top_differentiator}}
-  - Proof point to reference: {{strongest_proof_point}}
+  - If they mention {{competitor_name}}'s strength: [counter derived from {{competitor_intel.weaknesses}} and {{positioning}}]
+  - Key differentiator to emphasize: [top differentiator from {{competitor_intel.reasons_we_win}}]
+  - Proof point to reference: [strongest proof point from {{positioning.proof_points}}]
 
   ---
 
   Next steps:
   1. Copy emails to outreach tool
-  2. Generate call prep (/octave:generate call-prep)
-  3. Create a Custom Motion Playbook with narrative type `COMPETITIVE` (/octave:library create motion-playbook)
-  4. Research the deal further (/octave:research)
+  2. Generate call prep (/octave-generate call-prep)
+  3. Create a Custom Motion Playbook with narrative type `COMPETITIVE` (/octave-library create motion-playbook)
+  4. Research the deal further (/octave-research)

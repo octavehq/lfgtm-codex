@@ -6,10 +6,13 @@ GTM knowledge base integration for OpenAI Codex CLI.
 
 ## Install
 
+Install the skills from this repository using your Codex CLI version's skills/plugin mechanism, for example:
+
 ```bash
 codex plugin marketplace add https://github.com/octavehq/lfgtm-codex
-npx codex-marketplace add  octavehq/lfgtm-codex --plugin
 ```
+
+If your Codex version does not support plugin marketplaces, clone this repository and copy the `skills/` directories into your Codex skills location (see `codex --help` or the Codex documentation for the path your version uses).
 
 ## Configure your Octave MCP server
 

@@ -1,7 +1,7 @@
 #### Mode: Competitive
 
 ```
-DEAL COACHING: COMPETITIVE THREAT
+DEAL STRATEGY: COMPETITIVE THREAT
 ===================================
 
 Account: [Company]
@@ -27,7 +27,7 @@ IMMEDIATE ACTIONS
 
 ---
 
-[Pull from /octave:battlecard intelligence for this competitor]
+[Pull from /octave-battlecard intelligence for this competitor]
 
 TRAP QUESTIONS FOR THIS DEAL
 -----------------------------

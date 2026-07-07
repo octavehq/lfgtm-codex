@@ -1,6 +1,6 @@
 # Deal Coaching Agents
 
-This reference defines 5 coaching agent personas used by the `/octave:deal-coach` skill. Three primary agents map to the Resonate → Elevate → Compel stages. Two cross-stage agents provide supplemental coaching for negotiation and objection handling.
+This reference defines 5 coaching agent personas used by the `/octave-deal-coach` skill. Three primary agents map to the Resonate → Elevate → Compel stages. Two cross-stage agents provide supplemental coaching for negotiation and objection handling.
 
 When a coaching agent is activated, it should:
 1. Adopt the persona's voice and focus areas

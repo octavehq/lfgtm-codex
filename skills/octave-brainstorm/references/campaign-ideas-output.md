@@ -50,8 +50,8 @@ Why This Works:
 
 Next Steps:
 1. Pick a campaign to develop further
-2. Generate the full email sequence (/octave:generate)
-3. Save as a new Custom Motion Playbook (/octave:library create motion-playbook)
+2. Generate the full email sequence (/octave-generate)
+3. Save as a new Custom Motion Playbook (/octave-library create motion-playbook)
 
 Which campaign interests you most?
 ```

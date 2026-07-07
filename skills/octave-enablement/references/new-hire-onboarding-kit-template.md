@@ -68,7 +68,7 @@ Common loss factors:
 8. TOOLS & RESOURCES
 ---------------------
 • Octave Library: Your GTM knowledge base
-• Key skills: /octave:research, /octave:generate, /octave:battlecard
+• Key skills: /octave-research, /octave-generate, /octave-battlecard
 
 ---
 

@@ -75,7 +75,7 @@ Run this for each enriched contact. Present qualification scores and persona map
 ### Step 6: Match Motion ICPs
 tool: list_motions
 save_as: available_motions
-description: List Motions available in the workspace to identify which Motion best matches the offering being sold into this account.
+description: List Motions available in the workspace to identify which Motion best matches the offering being sold into this account. Pick the best match (or ask the user if ambiguous) and save its oId as selected_motion_oId.
 
 Then for the selected Motion:
 
@@ -147,6 +147,6 @@ template: |
   RECOMMENDED NEXT STEPS
   ----------------------
   1. Use a matched Motion ICP narrative to generate outreach
-  2. Run /octave:workflow run "Full Outbound Pipeline" --company {{company_domain}}
+  2. Run /octave-workflow run "Full Outbound Pipeline" --company {{company_domain}}
   3. Generate call prep for an upcoming meeting
   4. Research similar companies for account expansion

@@ -34,8 +34,8 @@ GAPS TO FOCUS ON
 
 RECOMMENDED NEXT STEPS
 -----------------------
-1. Review [specific entity] in your library: /octave:library show [entity]
-2. Role-play [specific scenario] to practice: /octave:train roleplay --scenario [type]
+1. Review [specific entity] in your library: /octave-library show [entity]
+2. Role-play [specific scenario] to practice: /octave-train roleplay --scenario [type]
 3. Read the [Motion ICP cell] narrative for [gap area]
 
 ---
