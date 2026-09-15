@@ -31,7 +31,7 @@ OPEN in browser
 | Category | Example | Where it goes |
 |---|---|---|
 | **Principle violation** | Text wall in a `<p>`, orphan word, cheeky label | `shared/` files |
-| **Template/skill gap** | Section template missing a pattern, wrong default label, missing brand-kit step | `skills/one-pager/` files |
+| **Template/skill gap** | Section template missing a pattern, wrong default label, missing brand-kit step | `skills/octave-one-pager/` files |
 
 ### After iteration: push upstream
 
