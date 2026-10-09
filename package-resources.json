@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "2.11.1",
-  "sourceCommit": "60bf07e348124e716d72ea31206dec25ce95fee6",
+  "version": "2.11.2",
+  "sourceCommit": "369fcde846fc509131e82fc1fccb65fb878c795d",
   "sourceDirty": false,
   "skillPaths": {
     "skills/abm": "skills/octave-abm",
