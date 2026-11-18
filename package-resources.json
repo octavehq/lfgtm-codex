@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "2.21.0",
-  "sourceCommit": "4808a1dd1c2cc111fb9e4e8582d9710335c00c4a",
+  "version": "2.22.1",
+  "sourceCommit": "9149b56274ee504d664bcaefa459b2921cac13b2",
   "sourceDirty": false,
   "skillPaths": {
     "skills/abm": "skills/octave-abm",
@@ -15,11 +15,13 @@
     "skills/deal-coach": "skills/octave-deal-coach",
     "skills/deck": "skills/octave-deck",
     "skills/digest": "skills/octave-digest",
+    "skills/document": "skills/octave-document",
     "skills/generate": "skills/octave-generate",
     "skills/get-brand-components": "skills/octave-get-brand-components",
     "skills/icp-refine": "skills/octave-icp-refine",
     "skills/insights": "skills/octave-insights",
     "skills/library": "skills/octave-library",
+    "skills/magazine": "skills/octave-magazine",
     "skills/meeting-prep": "skills/octave-meeting-prep",
     "skills/microsite": "skills/octave-microsite",
     "skills/one-pager": "skills/octave-one-pager",
